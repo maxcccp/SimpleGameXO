@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GameXO</title>
+	<style type="text/css">
+		.boardwrap{
+		  width: 500px;
+		  height: 500px;
+		  margin: auto;
+		  display: grid;
+		  grid-template-columns: repeat(3, 1fr);
+		  grid-template-rows: repeat(3, 1fr);
+		}
+	</style>
+</head>
+<body>
+	<h1 id="resultOut">Result: </h1>
+	<h1>Menu: <button id="button-reset">RESET-GAME</button></h1>
+	<div class="boardwrap">
+	  <button id="button1"></button>
+	  <button id="button2"></button>
+	  <button id="button3"></button>
+	  <button id="button4"></button>
+	  <button id="button5"></button>
+	  <button id="button6"></button>
+	  <button id="button7"></button>
+	  <button id="button8"></button>
+	  <button id="button9"></button>
+	</div>
+
+
+
+	<!-- Note: Logic game. -->
+	<script type="text/javascript">
+		const button1 = document.getElementById("button1");
+		const button2 = document.getElementById("button2");
+		const button3 = document.getElementById("button3");
+		const button4 = document.getElementById("button4");
+		const button5 = document.getElementById("button5");
+		const button6 = document.getElementById("button6");
+		const button7 = document.getElementById("button7");
+		const button8 = document.getElementById("button8");
+		const button9 = document.getElementById("button9");
+
+		const btnReset  = document.getElementById("button-reset");
+		const resultOut = document.getElementById("resultOut");
+		const blockWrap = document.querySelector('.boardwrap');
+
+		// Note: 1 == X; 2 == O;
+		let currentXO = 1;
+
+		// Note: 0 == Draw; 1 == Victory; 
+		let resultGame = -1; 
+
+		const arrCase = [	
+		  /* Note: horizont */
+		  [0,1,2],
+		  [3,4,5],
+		  [6,7,8],
+		  
+		  /* Note: vertical */
+		  [0,3,6],
+		  [1,4,7],
+		  [2,5,8],
+		  
+		  /* Note: diagonal */
+		  [0,4,8],
+		  [2,4,6],
+		];
+
+
+		function checkEmptyBlock(){
+			
+			for( let i = 0; i < blockWrap.children.length; i++ )
+				if( blockWrap.children[i].innerHTML == ""  && resultGame != 1 )
+					return false;
+
+			return true;
+		}
+
+
+		// Note: Logic game.
+		function logicGame(){
+	
+		  for( let i in arrCase ){
+		  	
+		    if( blockWrap.children[arrCase[i][0]].innerHTML == "X" && 
+		    	blockWrap.children[arrCase[i][1]].innerHTML == "X" &&  
+		    	blockWrap.children[arrCase[i][2]].innerHTML == "X" ){
+		       
+		        blockWrap.children[arrCase[i][0]].style.backgroundColor="green";
+		        blockWrap.children[arrCase[i][1]].style.backgroundColor="green";
+		        blockWrap.children[arrCase[i][2]].style.backgroundColor="green";
+		        
+		        resultGame = 1;
+		        // Note: result out.
+		        resultOut.innerHTML = "Result: End Game Victory X!";
+		      return false; 
+		    }
+		    	
+		    else if( blockWrap.children[arrCase[i][0]].innerHTML == "O" &&  
+		    		blockWrap.children[arrCase[i][1]].innerHTML == "O" &&  
+		            blockWrap.children[arrCase[i][2]].innerHTML == "O" ){
+		              
+		            blockWrap.children[arrCase[i][0]].style.backgroundColor="green";
+		        	blockWrap.children[arrCase[i][1]].style.backgroundColor="green";
+		        	blockWrap.children[arrCase[i][2]].style.backgroundColor="green";
+		              
+		            resultGame = 1;
+		            // Note: result out.
+		            resultOut.innerHTML = `Result: Game Victory O!`;
+
+		      		return false;
+		    	}	 
+		    }
+
+		    if( checkEmptyBlock() ){
+		    		resultGame = 0;
+		    		resultOut.innerHTML = `Result: Game Draw (^_^)`;
+
+		    	for( let i=0; i < blockWrap.children.length; i++ ){
+					blockWrap.children[i].style.backgroundColor = "yellow";
+				}
+		    }
+
+		    return true;
+		}
+
+		// Note: Event click any buttons in block.
+		blockWrap.addEventListener( 'click', event => {
+					
+		    if( event.target.tagName === "BUTTON" ){
+
+		    	
+		    
+		    	if( resultGame == 1 || resultGame == 0 )
+		       		return;
+		      
+		    	
+		      	if( event.target.textContent === "" && currentXO === 1 ){
+		      
+		      		event.target.textContent = 'X';
+
+			      	if( logicGame() ) currentXO = 2; 
+		      	}
+		      	else if( event.target.textContent === "" && currentXO === 2 ){
+		      		
+		      		event.target.textContent = 'O';
+		      		
+		      		if( logicGame() ) currentXO = 1;	
+		    	}
+		    	
+		    }
+		});
+
+
+		// Note: Event clicked button reset game.
+		btnReset.addEventListener( 'click', event => {
+			currentXO = 1;
+			resultGame = -1;
+			resultOut.innerHTML = "Result: ";
+			for( let i=0; i < blockWrap.children.length; i++ ){
+				blockWrap.children[i].innerHTML="";
+				blockWrap.children[i].style.backgroundColor = "";
+			}
+		});
+
+	</script>
+
+</body>
+</html>
